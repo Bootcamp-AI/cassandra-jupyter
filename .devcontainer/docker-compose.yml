@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # 1. The Application Container (Jupyter/Python)
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces/${localWorkspaceFolderBasename}
+    # Keep the container running
+    command: sleep infinity
+    depends_on:
+      - db
+    # Set environment variables for the connection here
+    environment:
+      - CASSANDRA_HOST=db
+      - CASSANDRA_PORT=9042
+
+  # 2. The Database Container (Cassandra)
+  db:
+    image: cassandra:latest
+    restart: always
+    ports:
+      - "9042:9042" # Expose Cassandra port
+    environment:
+      - CASSANDRA_CLUSTER_NAME=MyCluster
+      # Optimization for dev environments to start faster (optional)
+      - JVM_OPTS=-Xms512M -Xmx512M
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+volumes:
+  cassandra-data:

@@ -1,0 +1,27 @@
+{
+  "name": "Jupyter & Cassandra",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // Configure Features (Installs Jupyter and common tools)
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "installJupyterlab": true,
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+
+  // Forward ports: Jupyter (usually 8888) and Cassandra (9042)
+  "forwardPorts": [8888, 9042],
+
+  // Configure Environment Variables inside the Codespace
+  "containerEnv": {
+    "MY_CUSTOM_VAR": "hello_world",
+    "CASSANDRA_CONTACT_POINT": "db" 
+  },
+
+  // Auto-install the Cassandra driver for Python upon creation
+  "postCreateCommand": "pip install cassandra-driver notebook"
+}
